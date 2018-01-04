@@ -20,6 +20,9 @@ import java.util.Date;
 public class Util {
     private static final MediaType JSON = MediaType.parse("application/json;charset=utf-8");
     private static final String WXGAME_URL = "https://mp.weixin.qq.com/wxagame/wxagame_settlement";
+    /**
+     * 写死的游戏次数 TIMES
+     */
     private static final int TIMES = 1000;
     private static final String SESSIONID_ERROR = "SESSIONID有误，请检查";
     private static String game_data = null;
@@ -27,6 +30,14 @@ public class Util {
     private static final DecimalFormat decimalFormat2 = new DecimalFormat("#.##");
     private static final DecimalFormat decimalFormat3 = new DecimalFormat("###");
 
+    /**
+     * 该函数使用Key，iv对需要加密的内容进行AES加密，返回加密后又进行Base64编码的字符串
+     *
+     * @param sessionKey
+     * @param encryptedData
+     * @param iv
+     * @return
+     */
     private static String getActionData(String sessionKey, String encryptedData, String iv) {
         byte[] sessionKeyBy = sessionKey.getBytes();
         byte[] en = new byte[0];
@@ -40,13 +51,19 @@ public class Util {
         return new String(Base64.toBase64String(enc));
     }
 
+    /**
+     * 该工具类在我的Web提交工具中使用，故构造的参数全部写成静态变量，在类加载时只加载一次，减小服务器开销
+     */
     static {
         JSONArray action = new JSONArray();
         JSONArray musicList = new JSONArray();
         JSONArray touchList = new JSONArray();
         JSONArray steps = new JSONArray();
         JSONArray timestamp = new JSONArray();
-        long startTime = System.currentTimeMillis()-1500000;
+        /**
+         * 伪造的时间戳，这里把开始时间从当前时间减小大概25分钟
+         */
+        long startTime = System.currentTimeMillis() - 1500000;
         for (int i = 3000; i > 0; i--) {
             steps.put(new JSONArray());
             musicList.put(false);
@@ -64,7 +81,7 @@ public class Util {
             touchListData.put(tFirst);
             touchListData.put(tSecond);
             touchList.put(touchListData);
-            long newTime = startTime + Math.round(Math.random()*2700);
+            long newTime = startTime + Math.round(Math.random() * 2700);
             timestamp.put(newTime);
             startTime = newTime;
         }
