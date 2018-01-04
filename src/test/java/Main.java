@@ -1,5 +1,5 @@
-package com;
 
+import com.Util;
 import okhttp3.*;
 import org.bouncycastle.util.encoders.Base64;
 import org.json.JSONObject;
@@ -19,7 +19,7 @@ public class Main {
         String sessionid = "zS7m19dyi83wQIJmpDKX5qWcumYPUx1f8KNkxk1LG8e8CIcZ8emXs2cx0XFslY1q8k1WctCLXCXGUrdk4wgC3VuQf1qsvIUH0LzxnB2zAmLZH3I2Kt4gVSLOrMcTp8xwBFNNfl9fNXrd4gq8qBy73w==";
         String score = "100";
         String times = "700";
-        String result = Util.postData(score, times, sessionid);
+        String result = Util.postData(score,  sessionid);
         System.out.println(result);
     }
 }
