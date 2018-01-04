@@ -7,7 +7,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.rmi.MarshalException;
 import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author: Seayon
@@ -41,12 +44,16 @@ public class Util {
         JSONArray action = new JSONArray();
         JSONArray musicList = new JSONArray();
         JSONArray touchList = new JSONArray();
-        for (int i = 10000; i > 0; i--) {
+        JSONArray steps = new JSONArray();
+        JSONArray timestamp = new JSONArray();
+        long startTime = System.currentTimeMillis()-1500000;
+        for (int i = 3000; i > 0; i--) {
+            steps.put(new JSONArray());
             musicList.put(false);
             JSONArray actionData = new JSONArray();
             double first = Double.valueOf(decimalFormat1.format(Math.random()));
             Double second = Double.valueOf(decimalFormat2.format(Math.random() * 2));
-            boolean booleFlag = i / 5000 == 0 ? true : false;
+            boolean booleFlag = i / 1500 == 0 ? true : false;
             actionData.put(first);
             actionData.put(second);
             actionData.put(booleFlag);
@@ -57,10 +64,15 @@ public class Util {
             touchListData.put(tFirst);
             touchListData.put(tSecond);
             touchList.put(touchListData);
+            long newTime = startTime + Math.round(Math.random()*2700);
+            timestamp.put(newTime);
+            startTime = newTime;
         }
-        game_data = "action\":" + action.toString() + ",\"" +
-                "musicList\":" + musicList.toString() + ",\"" +
-                "touchList\":" + touchList.toString() + ",\"version\":1}";
+        game_data = "action\":" + action.toString() + "," +
+                "\"musicList\":" + musicList.toString() + "," +
+                "\"touchList\":" + touchList.toString() + "," +
+                "\"steps\":" + steps.toString() + "," +
+                "\"timestamp:\"" + timestamp + ",\"version\":2}";
     }
 
     public static String postData(String score, String session_id) {
@@ -68,7 +80,6 @@ public class Util {
         JSONObject actionDataInfo = new JSONObject();
         actionDataInfo.put("score", Integer.valueOf(score));
         actionDataInfo.put("times", TIMES);
-
         actionDataInfo.put("game_data", "{\"seed\":" + System.currentTimeMillis() + "123" + ",\"" + game_data);
         String AES_KEY = null;
         try {
@@ -99,6 +110,7 @@ public class Util {
         try {
             responseBody = okHttpClient.newCall(request).execute().body();
             result = responseBody.string();
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
